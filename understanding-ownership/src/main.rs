@@ -199,26 +199,128 @@
 
 
 // Dangling references
+// fn main() {
+//     let reference_to_nothing = dangle();
+// }
+
+// // This function tries to return a reference to a String,
+// // but the String will go out of scope when the function
+// // ends, so the reference would be pointing to invalid data.
+// fn dangle() -> 
+//     // &String
+//     String
+// {
+//     let s = String::from("hello");
+
+//     // If you try to return a reference to s here,
+//     // it would be a dangling reference.
+//     // &s
+
+//     // To fix this, we return the String itself, not a reference to it.
+//     // Ownership is moved out of the function, and nothing is deallocated.
+//     s
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ##################
+// # The SLice Type #
+// ##################
+
+// fn main() {
+//     let mut s = String::from("hello world");
+
+//     let word = first_word(&s);
+
+//     s.clear();
+// }
+
+// fn first_word(s: &String) -> usize {
+//     let bytes = s.as_bytes();
+
+//     // iter() return an iterator over the slice
+//     // enumerate() yields tuples where the first element is the index and
+//     // the second element is a reference to the value at that index.
+//     for (i, &item) in bytes.iter().enumerate() {
+
+//         // bytes syntax: b' ' represents a byte literal for the space character
+//         if item == b' ' {
+//             return i;
+//         }
+//     }
+
+//     s.len()
+// }
+// Complication: The first_word function returns a usize value representing
+// the index of the end of the first word. But after calling s.clear(),
+// the String is now empty, and that index is no longer valid.
+// The first_word function does not prevent this invalid state,
+// because it only has a reference to the String, not ownership of it.
+// Therefore, Rust cannot guarantee memory safety here.
+// To solve this problem, we can use string slices.
+
+
+
+// A string slice is a reference to a part of a String.
+// fn main() {
+//     let mut s = String::from("hello");
+
+//     // let len = s.len();
+
+//     // // Start index can be omitted, defaulting to 0
+//     // let slice = &s[0..2];
+//     // let slice =  &[..2];
+
+//     // // End index can be omitted, defaulting to the length of the string
+//     // let slice = &s[3..len];
+//     // let slice = &s[3..];
+
+//     // // Both start and end can be omitted, resulting in the whole string
+//     // let slice = &s[0..len];
+//     // let slice = &s[..];
+
+//     let word = first_word(&s);
+
+//     // Compiler error: cannot borrow `s` as mutable because it is also borrowed as immutable
+//     s.clear(); // This empties the String, making it equal to ""
+
+//     println!("the first word is: {}", word);
+// }
+
+// fn first_word(s: &String) -> &str {
+//     let bytes = s.as_bytes();
+
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return &s[0..i];
+//         }
+//     }
+
+//     &s[..]
+// }
+
+
+
+// Other slices
 fn main() {
-    let reference_to_nothing = dangle();
+    let a = [1, 2, 3, 4, 5];
+
+    let slice = &a[1..3];
+
+    assert_eq!(slice, &[2, 3]);
 }
 
-// This function tries to return a reference to a String,
-// but the String will go out of scope when the function
-// ends, so the reference would be pointing to invalid data.
-fn dangle() -> 
-    // &String
-    String
-{
-    let s = String::from("hello");
-
-    // If you try to return a reference to s here,
-    // it would be a dangling reference.
-    // &s
-
-    // To fix this, we return the String itself, not a reference to it.
-    // Ownership is moved out of the function, and nothing is deallocated.
-    s
-}
 
 

@@ -44,7 +44,12 @@ mod back_of_house {
 
 fn deliver_order() {}
 
-fn eat_at_restaurant() {
+// Bringing the hosting module into scope
+// pub keyword makes it accessible from outside this module
+// effectively re-exporting it
+pub use crate::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
     // Absolute path
     // crate::front_of_house::hosting::add_to_waitlist();
 
@@ -59,8 +64,55 @@ fn eat_at_restaurant() {
     // because seasonal_fruit is private
     // meal.seasonal_fruit = String::from("blueberries");
 
-
-
     let order1 = back_of_house::Appetizer::Soup;
     let order2 = back_of_house::Appetizer::Salad;
+
+    // Using the hosting module brought into scope
+    hosting::add_to_waitlist();
 }
+
+
+
+
+
+
+// ########################################
+// # Disambiguating between similar names #
+// ########################################
+
+// use std::fmt;
+// use std::io;
+
+// fn function1() -> fmt::Result {
+//     // --snip--
+//     Ok(())
+// }
+// fn function2() -> io::Result<()> {
+//     // --snip--
+//     Ok(())
+// }
+
+// Using 'as' to create an alias
+// use std::fmt::Result as FmtResult;
+// use std::io::Result as IoResult;
+
+
+
+
+
+// ################
+// # Nested Paths #
+// ################
+
+// These are useful when importing multiple items from the same module
+
+// use std::{cmp::Ordering, io};
+// use std::io::{self, Write};
+
+
+
+
+// ########
+// # Glob #
+// ########
+// use std::collections::*;
